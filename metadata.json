@@ -1,0 +1,5 @@
+{
+  "name": "WA Blaster Command Center",
+  "description": "A high-tech control panel for managing AI-driven WhatsApp blasting campaigns with Gemini integration and Termux script generation.",
+  "requestFramePermissions": []
+}

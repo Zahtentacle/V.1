@@ -1,0 +1,22 @@
+
+{
+  "name": "wa-blaster-gen3",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "@google/genai": "^1.39.0",
+    "lucide-react": "^0.563.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
