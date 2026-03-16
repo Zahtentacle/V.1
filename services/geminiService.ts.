@@ -1,0 +1,44 @@
+import { GoogleGenAI } from "@google/genai";
+
+export class GeminiService {
+  private ai: GoogleGenAI;
+  private modelName = 'gemini-3-flash-preview';
+
+  constructor() {
+    // API Key obtained exclusively from environment as per system instructions
+    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+  }
+
+  async generatePersonaMessage(name: string, template: string): Promise<string> {
+    const prompt = `
+      Act as "Worker Alpha", a message optimization agent.
+      Task: Rewrite the following message for a WhatsApp user named "${name}".
+      
+      Constraints:
+      1. Language: Casual Indonesian (Bahasa Gaul/Santai).
+      2. Addressing: Must use "Ka" or "Kaka" instead of formal terms.
+      3. Human Touch: Include 1-2 very minor typing quirks or colloquialisms to sound like a real human (e.g., "bgt" instead of "banget", "okey" instead of "oke").
+      4. Anti-Spam: Append a unique random code at the end (e.g., #A1B2).
+
+      Original Template:
+      "${template}"
+
+      Return ONLY the rewritten message string. Do not include any meta-talk.
+    `;
+
+    try {
+      const response = await this.ai.models.generateContent({
+        model: this.modelName,
+        contents: prompt,
+      });
+
+      // Directly access .text property as per guidelines
+      const text = response.text;
+      return text?.trim() || template.replace('{Nama}', name);
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      // Fail-safe logic
+      return template.replace('{Nama}', name) + " #" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    }
+  }
+}
