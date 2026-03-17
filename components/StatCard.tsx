@@ -1,25 +1,20 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
 
-interface StatCardProps {
+interface Props {
   label: string;
-  value: string | number;
-  icon: LucideIcon;
+  value: number | string;
+  icon: any;
   color: string;
-  subtext?: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, color, subtext }) => {
+const StatCard: React.FC<Props> = ({ label, value, icon: Icon, color }) => {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-lg flex items-start justify-between hover:border-zinc-700 transition-colors">
-      <div>
-        <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider">{label}</p>
-        <h3 className="text-2xl font-bold text-zinc-100 mt-1">{value}</h3>
-        {subtext && <p className="text-zinc-600 text-xs mt-1">{subtext}</p>}
+    <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+      <div className="flex justify-between items-center">
+        <span className="text-sm">{label}</span>
+        <Icon className={color} size={18} />
       </div>
-      <div className={`p-2 rounded-md bg-opacity-10 ${color.replace('text-', 'bg-')}`}>
-        <Icon className={`${color} w-5 h-5`} />
-      </div>
+      <div className="text-xl font-bold mt-2">{value}</div>
     </div>
   );
 };
