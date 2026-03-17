@@ -1,32 +1,31 @@
+export type ContactStatus = 'pending' | 'processing' | 'sent';
+
 export interface Contact {
   id: string;
   name: string;
   phone: string;
-  status: 'pending' | 'processing' | 'sent' | 'failed';
+  status: ContactStatus;
   message?: string;
-  log?: string;
   timestamp?: string;
 }
 
 export interface LogEntry {
   id: string;
   timestamp: string;
-  worker: 'ALPHA' | 'BETA' | 'GAMMA' | 'DELTA' | 'SYSTEM';
+  worker: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'info' | 'success' | 'error' | 'warning';
 }
 
 export enum WorkerStatus {
   IDLE = 'IDLE',
-  RUNNING = 'RUNNING',
-  PAUSED = 'PAUSED',
-  SLEEPING = 'SLEEPING'
+  RUNNING = 'RUNNING'
 }
 
-export interface WorkerActivity {
-  id: 'ALPHA' | 'BETA' | 'GAMMA' | 'DELTA';
+export interface Worker {
+  id: string;
   name: string;
-  status: 'active' | 'idle' | 'warning';
+  status: string;
   load: number;
 }
 
@@ -36,5 +35,5 @@ export interface AppState {
   workerStatus: WorkerStatus;
   processedCount: number;
   otpCode: string | null;
-  workers: WorkerActivity[];
+  workers: Worker[];
 }
