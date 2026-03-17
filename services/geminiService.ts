@@ -1,23 +1,29 @@
-import { GoogleGenerativeAI } from "@google/genai";
-
-export class GeminiService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
-
-  constructor() {
-    // API Key akan diambil dari environment variable di Vercel/Termux
-    const apiKey = "DUMMY_KEY"; 
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  }
-
+class GeminiService {
   async generatePersonaMessage(name: string, template: string): Promise<string> {
     try {
-      // Logika sederhana untuk simulasi jika API Key belum diset
-      return template.replace(/{Nama}/g, name);
-    } catch (error) {
-      console.error("Gemini Error:", error);
-      return template.replace(/{Nama}/g, name);
+      // Replace placeholder {Nama}
+      let message = template.replace(/{Nama}/gi, name);
+
+      // Variasi biar natural
+      const variations = [
+        "",
+        " Jangan sampai ketinggalan ya!",
+        " Promo terbatas hari ini.",
+        " Langsung cek sekarang juga.",
+        " Kesempatan tidak datang dua kali."
+      ];
+
+      const randomVariation = variations[Math.floor(Math.random() * variations.length)];
+
+      // Random code (GHOST style)
+      const randomCode = "#" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      return message + randomVariation + " " + randomCode;
+
+    } catch (err) {
+      return template.replace(/{Nama}/gi, name) + " #" + Math.random().toString(36).substring(2, 6).toUpperCase();
     }
   }
 }
+
+export default GeminiService;
