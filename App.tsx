@@ -43,15 +43,6 @@ const App: React.FC = () => {
     setState(prev => ({ ...prev, logs: [...prev.logs, newLog] }));
   };
 
-  const updateWorker = (id: WorkerActivity['id'], update: Partial<WorkerActivity>) => {
-    setState(prev => ({ ...prev, workers: prev.workers.map(w => w.id === id ? { ...w, ...update } : w) }));
-  };
-
-  useEffect(() => {
-    addLog('SYSTEM', 'Architect Protocol: GEN-3 Active.', 'info');
-    addLog('ALPHA', 'Gemini AI Neural Engine Ready.', 'success');
-  }, []);
-
   const handleConnectWA = () => {
     setShowQR(true);
     setTimeout(() => { setShowQR(false); setWaConnected(true); addLog('GAMMA', 'WhatsApp Pair SUCCESS.', 'success'); }, 3000);
@@ -87,15 +78,11 @@ const App: React.FC = () => {
     };
     processNext(); return () => { isCancelled = true; };
   }, [state.workerStatus, waConnected, state.contacts, messageTemplate, geminiService]);
-
   const toggleWorker = () => {
     if (!waConnected) return alert("Please link WhatsApp first!");
     setState(prev => ({ ...prev, workerStatus: prev.workerStatus === WorkerStatus.IDLE ? WorkerStatus.RUNNING : WorkerStatus.IDLE }));
   };
 
-  const currentTermuxScript = useMemo(() => {
-    return NODE_SCRIPT_TEMPLATE.replace('YOUR_API_KEY_HERE', "ENCRYPTED").replace('{Nama}', messageTemplate);
-  }, [messageTemplate]);
   return (
     <div className="min-h-screen bg-black text-zinc-100 flex font-sans overflow-hidden">
       <div className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col fixed h-full z-10">
