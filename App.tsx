@@ -112,6 +112,7 @@ const App: React.FC = () => {
   const currentTermuxScript = useMemo(() => {
     return NODE_SCRIPT_TEMPLATE.replace('YOUR_API_KEY_HERE', "ENCRYPTED").replace('{Nama}', messageTemplate);
   }, [messageTemplate]);
+
   return (
     <div className="min-h-screen bg-black text-zinc-100 flex font-sans overflow-hidden">
       <div className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col fixed h-full z-10">
@@ -127,9 +128,6 @@ const App: React.FC = () => {
           </button>
           <button onClick={() => setActiveTab('campaign')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm ${activeTab === 'campaign' ? 'bg-green-500/10 text-green-400' : 'text-zinc-400'}`}>
             <Database size={18} /> Campaign
-          </button>
-          <button onClick={() => setActiveTab('export')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm ${activeTab === 'export' ? 'bg-green-500/10 text-green-400' : 'text-zinc-400'}`}>
-            <Smartphone size={18} /> Export
           </button>
         </nav>
         <div className="p-4 border-t border-zinc-800">
@@ -194,4 +192,4 @@ const App: React.FC = () => {
 };
 
 export default App;
-             
+                                                 
