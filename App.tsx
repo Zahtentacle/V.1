@@ -31,7 +31,7 @@ const App: React.FC = () => {
     ]
   });
 
-  const [messageTemplate, setMessageTemplate] = useState("Halo {Nama}, kami ada promo menarik khusus hari ini. Silakan cek katalog kami ya.");
+  const [messageTemplate, setMessageTemplate] = useState("Halo {Nama}, kami ada promo menarik khusus hari ini.");
   const geminiService = useMemo(() => new GeminiService(), []);
 
   const addLog = (worker: LogEntry['worker'], message: string, type: LogEntry['type'] = 'info') => {
@@ -44,10 +44,7 @@ const App: React.FC = () => {
   };
 
   const updateWorker = (id: WorkerActivity['id'], update: Partial<WorkerActivity>) => {
-    setState(prev => ({
-      ...prev,
-      workers: prev.workers.map(w => w.id === id ? { ...w, ...update } : w)
-    }));
+    setState(prev => ({ ...prev, workers: prev.workers.map(w => w.id === id ? { ...w, ...update } : w) }));
   };
 
   useEffect(() => {
@@ -57,12 +54,7 @@ const App: React.FC = () => {
 
   const handleConnectWA = () => {
     setShowQR(true);
-    addLog('GAMMA', 'Generating secure QR payload...', 'info');
-    setTimeout(() => {
-      setShowQR(false);
-      setWaConnected(true);
-      addLog('GAMMA', 'WhatsApp Pair SUCCESS.', 'success');
-    }, 3000);
+    setTimeout(() => { setShowQR(false); setWaConnected(true); addLog('GAMMA', 'WhatsApp Pair SUCCESS.', 'success'); }, 3000);
   };
 
   const handleImport = () => {
@@ -74,8 +66,7 @@ const App: React.FC = () => {
         return { id: `imp-${Date.now()}-${idx}`, name: name || `User ${idx}`, phone: phone || '0', status: 'pending' };
       });
       setState(prev => ({ ...prev, contacts: [...prev.contacts, ...newContacts] }));
-      setImportText("");
-      setIsImporting(false);
+      setImportText(""); setIsImporting(false);
     }, 1000);
   };
 
@@ -85,23 +76,16 @@ const App: React.FC = () => {
     const processNext = async () => {
       if (isCancelled) return;
       const nextIndex = state.contacts.findIndex(c => c.status === 'pending');
-      if (nextIndex === -1) {
-        setState(prev => ({ ...prev, workerStatus: WorkerStatus.IDLE }));
-        return;
-      }
+      if (nextIndex === -1) { setState(prev => ({ ...prev, workerStatus: WorkerStatus.IDLE })); return; }
       const contact = state.contacts[nextIndex];
       setState(prev => ({ ...prev, contacts: prev.contacts.map((c, i) => i === nextIndex ? { ...c, status: 'processing' } : c) }));
       const finalMessage = await geminiService.generatePersonaMessage(contact.name, messageTemplate);
       await new Promise(r => setTimeout(r, 3000));
       if (isCancelled) return;
-      setState(prev => ({
-        ...prev, processedCount: prev.processedCount + 1,
-        contacts: prev.contacts.map((c, i) => i === nextIndex ? { ...c, status: 'sent', message: finalMessage, timestamp: new Date().toLocaleTimeString() } : c)
-      }));
+      setState(prev => ({ ...prev, processedCount: prev.processedCount + 1, contacts: prev.contacts.map((c, i) => i === nextIndex ? { ...c, status: 'sent', message: finalMessage, timestamp: new Date().toLocaleTimeString() } : c) }));
       processNext();
     };
-    processNext();
-    return () => { isCancelled = true; };
+    processNext(); return () => { isCancelled = true; };
   }, [state.workerStatus, waConnected, state.contacts, messageTemplate, geminiService]);
 
   const toggleWorker = () => {
@@ -112,14 +96,13 @@ const App: React.FC = () => {
   const currentTermuxScript = useMemo(() => {
     return NODE_SCRIPT_TEMPLATE.replace('YOUR_API_KEY_HERE', "ENCRYPTED").replace('{Nama}', messageTemplate);
   }, [messageTemplate]);
-
   return (
     <div className="min-h-screen bg-black text-zinc-100 flex font-sans overflow-hidden">
       <div className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col fixed h-full z-10">
         <div className="p-6 border-b border-zinc-800">
           <div className="flex items-center gap-3 text-green-500 mb-1">
             <Bot size={28} className="animate-pulse" />
-            <h1 className="font-bold text-lg tracking-tight text-white uppercase italic">Gen-3 Agent</h1>
+            <h1 className="font-bold text-lg text-white uppercase italic">Gen-3 Agent</h1>
           </div>
         </div>
         <nav className="flex-1 p-4 space-y-1">
@@ -131,12 +114,9 @@ const App: React.FC = () => {
           </button>
         </nav>
         <div className="p-4 border-t border-zinc-800">
-            {!waConnected && (
-              <button onClick={handleConnectWA} className="w-full bg-green-600 py-2 rounded text-xs font-bold text-white">LINK_WA</button>
-            )}
+            {!waConnected && ( <button onClick={handleConnectWA} className="w-full bg-green-600 py-2 rounded text-xs font-bold text-white">LINK_WA</button> )}
         </div>
       </div>
-
       <main className="flex-1 ml-64 h-screen overflow-y-auto p-8">
         <header className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-black text-white uppercase">{activeTab}</h2>
@@ -144,13 +124,7 @@ const App: React.FC = () => {
                 {state.workerStatus === WorkerStatus.RUNNING ? 'STOP' : 'START'}
             </button>
         </header>
-
-        {showQR && (
-          <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-2xl"><QrCode size={200} className="text-black" /></div>
-          </div>
-        )}
-
+        {showQR && ( <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"> <div className="bg-white p-6 rounded-2xl"><QrCode size={200} className="text-black" /></div> </div> )}
         {activeTab === 'dashboard' && (
             <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -172,17 +146,16 @@ const App: React.FC = () => {
                 </div>
             </div>
         )}
-
         {activeTab === 'campaign' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800">
-                    <h3 className="text-sm font-bold mb-4 uppercase">Neural Template</h3>
-                    <textarea className="w-full bg-black border border-zinc-800 rounded-xl p-4 h-48 text-sm font-mono" value={messageTemplate} onChange={(e) => setMessageTemplate(e.target.value)} />
+                    <h3 className="text-sm font-bold mb-4 uppercase">Template</h3>
+                    <textarea className="w-full bg-black border border-zinc-800 rounded-xl p-4 h-48 text-sm" value={messageTemplate} onChange={(e) => setMessageTemplate(e.target.value)} />
                 </div>
                 <div className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800">
-                    <h3 className="text-sm font-bold mb-4 uppercase">Bulk Import (Name, Phone)</h3>
-                    <textarea className="w-full bg-black border border-zinc-800 rounded-xl p-4 h-48 text-sm font-mono" placeholder="Budi, 62812345678" value={importText} onChange={(e) => setImportText(e.target.value)} />
-                    <button onClick={handleImport} className="w-full mt-4 bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase">Inject Targets</button>
+                    <h3 className="text-sm font-bold mb-4 uppercase">Import (Nama, HP)</h3>
+                    <textarea className="w-full bg-black border border-zinc-800 rounded-xl p-4 h-48 text-sm" value={importText} onChange={(e) => setImportText(e.target.value)} />
+                    <button onClick={handleImport} className="w-full mt-4 bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase">Inject</button>
                 </div>
             </div>
         )}
@@ -190,6 +163,4 @@ const App: React.FC = () => {
     </div>
   );
 };
-
 export default App;
-                                                 
